@@ -1,0 +1,14 @@
+/home/deepbasicsi9/Desktop/i5 Backup/Wifi Footage/target/release/deps/thiserror-9a9a9d5239e2a84c.d: /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/lib.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/aserror.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/display.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/var.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/private.rs /home/deepbasicsi9/Desktop/i5\ Backup/Wifi\ Footage/target/release/build/thiserror-811d4801991df703/out/private.rs
+
+/home/deepbasicsi9/Desktop/i5 Backup/Wifi Footage/target/release/deps/libthiserror-9a9a9d5239e2a84c.rlib: /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/lib.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/aserror.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/display.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/var.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/private.rs /home/deepbasicsi9/Desktop/i5\ Backup/Wifi\ Footage/target/release/build/thiserror-811d4801991df703/out/private.rs
+
+/home/deepbasicsi9/Desktop/i5 Backup/Wifi Footage/target/release/deps/libthiserror-9a9a9d5239e2a84c.rmeta: /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/lib.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/aserror.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/display.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/var.rs /home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/private.rs /home/deepbasicsi9/Desktop/i5\ Backup/Wifi\ Footage/target/release/build/thiserror-811d4801991df703/out/private.rs
+
+/home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/lib.rs:
+/home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/aserror.rs:
+/home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/display.rs:
+/home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/var.rs:
+/home/deepbasicsi9/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/thiserror-2.0.20/src/private.rs:
+/home/deepbasicsi9/Desktop/i5\ Backup/Wifi\ Footage/target/release/build/thiserror-811d4801991df703/out/private.rs:
+
+# env-dep:OUT_DIR=/home/deepbasicsi9/Desktop/i5 Backup/Wifi Footage/target/release/build/thiserror-811d4801991df703/out

@@ -1,0 +1,18 @@
+menu "Wi-Fi RF Monitor"
+config RF_WIFI_SSID
+    string "2.4 GHz Wi-Fi SSID"
+    default ""
+config RF_WIFI_PASSWORD
+    string "Wi-Fi password"
+    default ""
+config RF_RECEIVER_ID
+    string "Receiver ID (must match room.json)"
+    default "receiver-1"
+config RF_SERVER_IP
+    string "Central PC Server IP (e.g., 192.168.0.141 or 255.255.255.255)"
+    default "192.168.0.141"
+config RF_SERVER_PORT
+    int "Central Server UDP Port"
+    default 5005
+endmenu
+

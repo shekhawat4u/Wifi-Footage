@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RuView Observatory — WiFi DensePose CSI Sensing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <!-- ======= Fullscreen 3D WebGL Observatory Canvas ======= -->
+  <canvas id="observatory-canvas"></canvas>
+
+  <!-- ======= HUD Overlay ======= -->
+  <div id="hud">
+
+    <!-- Top-left: Brand Logo & Subtitle -->
+    <div id="brand">
+      <div id="brand-logo"><span class="pi">&pi;</span> RuView</div>
+      <div id="brand-tagline">WiFi DensePose Sensing Observatory</div>
+    </div>
+
+    <!-- Top-right: Connection + Scenario + Actions -->
+    <div id="status-bar">
+      <div id="data-source-badge">
+        <span class="dot dot--live"></span>
+        <span id="data-source-label">LIVE HARDWARE</span>
+      </div>
+
+      <div id="scenario-area">
+        <span id="autoplay-icon" title="Auto-sensing active">&#9654;</span>
+        <select id="scenario-quick-select" title="Change scenario">
+          <option value="live_office" selected>Office Occupancy (5 ppl)</option>
+          <option value="single_breathing">Vital Signs & Respiration</option>
+          <option value="two_walking">Multi-Person Trajectory</option>
+          <option value="fall_event">Fall Detection</option>
+          <option value="sleep_monitoring">Sleep Monitoring</option>
+          <option value="gesture_control">Gesture Sensing</option>
+          <option value="search_rescue">Search & Rescue</option>
+        </select>
+      </div>
+
+      <div id="fps-counter">60 FPS</div>
+
+      <!-- Camera View Angle Toggle -->
+      <div class="view-pill-group">
+        <button class="btn-pill active" id="view-3d" title="3D Perspective View">3D</button>
+        <button class="btn-pill" id="view-top" title="Top-Down Radar View">Top</button>
+        <button class="btn-pill" id="view-side" title="Side Profile View">Side</button>
+      </div>
+
+      <!-- Settings Gear Button -->
+      <button id="settings-btn" class="icon-btn" title="Observatory Settings">&#9881;</button>
+    </div>
+
+    <!-- Left Panel 1: Vital Signs & Biometrics -->
+    <div id="panel-vitals" class="data-panel panel-left-top">
+      <div class="panel-header">
+        <span>VITAL SIGNS</span>
+        <span class="badge-tag-amber">RF Doppler</span>
+      </div>
+      <div class="vital-row">
+        <div class="vital-icon pulse-heart">&#9825;</div>
+        <div class="vital-data">
+          <div class="vital-label">Heart Rate</div>
+          <div class="vital-value"><span id="hr-value">72</span> <span class="vital-unit">BPM</span></div>
+          <div class="vital-bar"><div id="hr-bar" class="vital-bar-fill vital-bar--hr" style="width: 60%"></div></div>
+        </div>
+      </div>
+      <div class="vital-row">
+        <div class="vital-icon pulse-breath">&#9788;</div>
+        <div class="vital-data">
+          <div class="vital-label">Respiration</div>
+          <div class="vital-value"><span id="br-value">16</span> <span class="vital-unit">RPM</span></div>
+          <div class="vital-bar"><div id="br-bar" class="vital-bar-fill vital-bar--br" style="width: 48%"></div></div>
+        </div>
+      </div>
+      <div class="vital-sub-stats">
+        <span>Heart Rhythm: <strong id="hr-status" style="color:var(--green-bright)">Regular</strong></span>
+        <span>Acoustic Rejection: <strong style="color:var(--green-glow)">Active</strong></span>
+      </div>
+    </div>
+
+    <!-- Left Panel 2: Occupancy & Spatial Presence -->
+    <div id="panel-occupancy" class="data-panel panel-left-bottom">
+      <div class="panel-header">
+        <span>SPATIAL OCCUPANCY</span>
+        <span class="badge-tag-green" id="occ-tag">Verified</span>
+      </div>
+      <div class="occupancy-highlight-row">
+        <div class="occ-huge-number" id="occ-count">5</div>
+        <div class="occ-meta-wrap">
+          <div class="occ-title" id="occ-label">People Detected</div>
+          <div class="occ-sub" id="occ-sub">Real-Time RF Scattering</div>
+        </div>
+      </div>
+      <div class="motion-energy-wrap">
+        <div class="energy-label-row">
+          <span>Motion Energy</span>
+          <strong id="energy-val">3.12 RF</strong>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="energy-fill" style="width: 55%"></div>
+        </div>
+      </div>
+      <div class="occupant-mini-list" id="occupant-mini-list">
+        <!-- Dynamically rendered list of occupants -->
+      </div>
+    </div>
+
+    <!-- Right Panel 1: CSI RF Spectrum & Subcarrier Waterfall -->
+    <div id="panel-signal" class="data-panel panel-right-top">
+      <div class="panel-header">
+        <span>CSI RADIO MANIFOLD</span>
+        <span class="badge-tag-blue">2.4 GHz</span>
+      </div>
+      
+      <!-- Live CSI Subcarrier Heatmap Canvas -->
+      <div class="csi-heatmap-container">
+        <canvas id="csi-heatmap-canvas" width="220" height="75"></canvas>
+        <div class="heatmap-legend">
+          <span>Subcarrier 1</span>
+          <span>Phase / Amp Spectrum</span>
+          <span>Subcarrier 52</span>
+        </div>
+      </div>
+
+      <!-- Node 1: Corner B ESP32 -->
+      <div class="node-telemetry-item">
+        <div class="node-title-row">
+          <span class="node-name dot-node1">ESP32 Node 1 (Corner B)</span>
+          <span class="node-rssi" id="node1-rssi">-59.0 dBm</span>
+        </div>
+        <div class="node-spark-wrap">
+          <canvas id="spark-node1" width="200" height="24"></canvas>
+        </div>
+      </div>
+
+      <!-- Node 2: Zone D ESP8266 -->
+      <div class="node-telemetry-item">
+        <div class="node-title-row">
+          <span class="node-name dot-node2">ESP8266 Node 2 (Zone D)</span>
+          <span class="node-rssi" id="node2-rssi">-64.0 dBm</span>
+        </div>
+        <div class="node-spark-wrap">
+          <canvas id="spark-node2" width="200" height="24"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Panel 2: DensePose 17-Keypoint Tracker -->
+    <div id="panel-pose" class="data-panel panel-right-bottom">
+      <div class="panel-header">
+        <span>DENSEPOSE RECONSTRUCTION</span>
+        <span class="badge-tag-purple">17-Keypoints</span>
+      </div>
+      <div class="pose-accuracy-row">
+        <span>Pose Confidence (PCK@20)</span>
+        <strong id="pose-acc">92.9%</strong>
+      </div>
+      <div class="keypoints-grid">
+        <div class="kp-badge kp-active">Head</div>
+        <div class="kp-badge kp-active">Shoulders</div>
+        <div class="kp-badge kp-active">Elbows</div>
+        <div class="kp-badge kp-active">Wrists</div>
+        <div class="kp-badge kp-active">Torso</div>
+        <div class="kp-badge kp-active">Hips</div>
+        <div class="kp-badge kp-active">Knees</div>
+        <div class="kp-badge kp-active">Ankles</div>
+      </div>
+      <div class="spatial-centroid-row">
+        <span>RF Centroid:</span>
+        <strong id="centroid-coords">(2.86m, 1.72m)</strong>
+      </div>
+    </div>
+
+    <!-- Bottom Center: Real-Time Signal Waveform Timeline -->
+    <div id="bottom-timeline-panel" class="data-panel panel-bottom-center">
+      <div class="panel-header-compact">
+        <span>REAL-TIME MULTIPATH DISTURBANCE TIMELINE (60s)</span>
+        <span class="timeline-meta" id="clock">--:--:--</span>
+      </div>
+      <canvas id="timeline-canvas" height="50"></canvas>
+    </div>
+
+  </div>
+
+  <!-- ======= Settings Modal ======= -->
+  <div id="settings-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>Observatory Settings</h3>
+        <button id="modal-close" class="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label class="setting-label">Rendering Mode</label>
+          <select id="setting-render-mode" class="setting-select">
+            <option value="densepose" selected>DensePose Holographic Mesh</option>
+            <option value="wireframe">Cybernetic Wireframe</option>
+            <option value="pointcloud">Dot-Matrix Point Cloud</option>
+            <option value="radar_only">Spatial Radar Only</option>
+          </select>
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Multipath RF Wavefield Particle Density</label>
+          <input type="range" id="setting-particles" min="100" max="2000" step="100" value="800" class="setting-range">
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Holographic Glow Intensity</label>
+          <input type="range" id="setting-glow" min="0.1" max="1.0" step="0.05" value="0.75" class="setting-range">
+        </div>
+        <div class="setting-group">
+          <label class="setting-label">Acoustic Speaker Soundwave Cancellation</label>
+          <input type="checkbox" id="setting-acoustic" checked>
+          <span style="font-size:11px;color:var(--text-secondary);margin-left:6px">Active Spectral Median Rejection</span>
+        </div>
+        <div class="modal-actions">
+          <button id="btn-recalibrate" class="btn-action-primary">Calibrate Baseline</button>
+          <button id="modal-done" class="btn-action-secondary">Done</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

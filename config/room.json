@@ -1,0 +1,12 @@
+{
+  "name": "My room",
+  "width_m": 5.0,
+  "height_m": 4.0,
+  "calibration_samples": 10,
+  "motion_threshold": 0.35,
+  "links": [
+    {"id": "receiver-1", "label": "ESP32 Node 1 (Corner B - North-East)", "x": 4.65, "y": 0.35, "color": "#69e7ff"},
+    {"id": "receiver-2", "label": "ESP8266 Node 2 (Zone D - South-West)", "x": 0.35, "y": 3.65, "color": "#ff7657"}
+  ]
+}
+
